@@ -1,10 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Heart, Calendar, Clock, Users } from 'lucide-react';
 
+type TimeData = {
+  totalDays?: number;
+  totalWeeks?: number;
+  totalMonths?: number;
+  totalYears?: number;
+  totalHours?: number;
+  totalMinutes?: number;
+  totalSeconds?: number;
+  exactYears?: number;
+  exactMonths?: number;
+  exactDays?: number;
+}
+
 const LoveCounter = () => {
   const [startDate, setStartDate] = useState('2023-11-25');
   const [isEditable, setIsEditable] = useState(false);
-  const [timeData, setTimeData] = useState({});
+  const [timeData, setTimeData] = useState<TimeData>({});
 
   // Función para calcular diferencias de tiempo
   const calculateTimeDifference = (start: string) => {
@@ -66,7 +79,13 @@ const LoveCounter = () => {
   }, [startDate]);
 
   // Componente de corazón flotante
-  const FloatingHeart = ({ delay, duration, size = 20 }) => (
+  type FloatingHeartProps = {
+    delay: number;
+    duration: number;
+    size?: number;
+  };
+
+  const FloatingHeart = ({ delay, duration, size = 20 }: FloatingHeartProps) => (
     <div
       className="absolute opacity-20 pointer-events-none"
       style={{
@@ -99,51 +118,6 @@ const LoveCounter = () => {
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(100vh) rotate(0deg);
-            opacity: 0;
-          }
-          10%, 90% {
-            opacity: 0.3;
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-            opacity: 0.6;
-          }
-        }
-        
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 0; }
-          50% { opacity: 0.4; }
-        }
-        
-        @keyframes heartbeat {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-        }
-        
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-heartbeat {
-          animation: heartbeat 2s ease-in-out infinite;
-        }
-        
-        .animate-slideIn {
-          animation: slideIn 0.6s ease-out forwards;
-        }
-      `}</style>
 
       <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
@@ -189,12 +163,12 @@ const LoveCounter = () => {
               <Users className="mx-auto text-pink-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-gray-800 mb-4">Tiempo Exacto Juntos</h3>
               <div className="text-4xl md:text-5xl font-bold text-pink-600 mb-2">
-                {timeData.exactYears > 0 && (
-                  <span>{timeData.exactYears} año{timeData.exactYears !== 1 ? 's' : ''}</span>
+                {(timeData.exactYears ?? 0) > 0 && (
+                  <span>{timeData.exactYears ?? 0} año{(timeData.exactYears ?? 0) !== 1 ? 's' : ''}</span>
                 )}
               </div>
               <div className="text-2xl md:text-3xl font-semibold text-pink-500">
-                {timeData.exactMonths > 0 && (
+                {(timeData.exactMonths?? 0) > 0 && (
                   <span>{timeData.exactMonths} mes{timeData.exactMonths !== 1 ? 'es' : ''} </span>
                 )}
                 {timeData.exactDays} día{timeData.exactDays !== 1 ? 's' : ''}
